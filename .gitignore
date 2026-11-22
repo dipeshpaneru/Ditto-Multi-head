@@ -2,3 +2,4 @@
 __pycache__/
 models/*/model.safetensors
 .DS_Store
+SpokenNLP/action-item-detection/data/AMI/similarity/similarity_ngram_cosine_ami101a.json 
