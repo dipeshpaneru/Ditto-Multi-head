@@ -1,0 +1,83 @@
+W1122 13:33:17.520000 44534 torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 6425.01it/s]
+[transformers] [1mBertModel LOAD REPORT[0m from: models/bert-base-uncased
+Key                                        | Status     |  | 
+-------------------------------------------+------------+--+-
+cls.predictions.transform.LayerNorm.weight | UNEXPECTED |  | 
+cls.predictions.transform.dense.weight     | UNEXPECTED |  | 
+cls.predictions.bias                       | UNEXPECTED |  | 
+cls.seq_relationship.bias                  | UNEXPECTED |  | 
+cls.predictions.transform.LayerNorm.bias   | UNEXPECTED |  | 
+cls.seq_relationship.weight                | UNEXPECTED |  | 
+cls.predictions.transform.dense.bias       | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+Development evaluation on 1500 pairs (cpu)
+Development single heads: [((0, 9), 74.55531913335119), ((1, 11), 73.12620437976487), ((10, 10), 70.59217042459528), ((0, 6), 69.53870030256651)]
+Development ensembles: {2: 75.47006613963762, 3: 75.73536436542739, 4: 75.5766816936412}; selected [(0, 9), (1, 11), (10, 10)]
+Test evaluation on 1379 pairs
+{
+  "metric": "Spearman correlation × 100",
+  "head_indexing": "zero-based layer, head",
+  "development_single_heads": [
+    {
+      "head": [
+        0,
+        9
+      ],
+      "score": 74.55531913335119
+    },
+    {
+      "head": [
+        1,
+        11
+      ],
+      "score": 73.12620437976487
+    },
+    {
+      "head": [
+        10,
+        10
+      ],
+      "score": 70.59217042459528
+    },
+    {
+      "head": [
+        0,
+        6
+      ],
+      "score": 69.53870030256651
+    }
+  ],
+  "development_ensembles_by_k": {
+    "2": 75.47006613963762,
+    "3": 75.73536436542739,
+    "4": 75.5766816936412
+  },
+  "selected_heads": [
+    [
+      0,
+      9
+    ],
+    [
+      1,
+      11
+    ],
+    [
+      10,
+      10
+    ]
+  ],
+  "test_single_head": 66.75975212990323,
+  "test_multihead": 69.58693093601288,
+  "test_delta": 2.827178806109643,
+  "paired_bootstrap": {
+    "replicates": 10000,
+    "seed": 42,
+    "confidence_interval_95": [
+      1.4502392052632005,
+      4.291967869160465
+    ]
+  }
+}

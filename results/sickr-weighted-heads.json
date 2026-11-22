@@ -1,0 +1,94 @@
+{
+  "metric": "Spearman correlation × 100",
+  "heads_zero_based": [
+    [
+      0,
+      9
+    ],
+    [
+      1,
+      11
+    ],
+    [
+      10,
+      10
+    ]
+  ],
+  "tuning_split": "STS-B development",
+  "development_grid": [
+    {
+      "weights": [
+        0.3333333333333333,
+        0.3333333333333333,
+        0.3333333333333333
+      ],
+      "score": 75.73536436542739
+    },
+    {
+      "weights": [
+        0.5,
+        0.25,
+        0.25
+      ],
+      "score": 75.9118093270516
+    },
+    {
+      "weights": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "score": 75.53628148782465
+    },
+    {
+      "weights": [
+        0.25,
+        0.25,
+        0.5
+      ],
+      "score": 75.16490798874054
+    }
+  ],
+  "selected_weights": [
+    0.5,
+    0.25,
+    0.25
+  ],
+  "test_split": "SICK-R test",
+  "test_pairs": 4927,
+  "test_scores": {
+    "single": 61.63710480661899,
+    "equal_normalized": 64.29317166828466,
+    "selected_normalized": 63.93655491688095,
+    "equal_raw": 64.55430303153837
+  },
+  "paired_comparisons": {
+    "selected_normalized_minus_equal_normalized": {
+      "delta": -0.3566167514037062,
+      "replicates": 10000,
+      "seed": 42,
+      "confidence_interval_95": [
+        -0.522351740255117,
+        -0.19163195850894613
+      ]
+    },
+    "equal_normalized_minus_equal_raw": {
+      "delta": -0.26113136325371045,
+      "replicates": 10000,
+      "seed": 42,
+      "confidence_interval_95": [
+        -0.4472339929584873,
+        -0.07919720574036132
+      ]
+    },
+    "equal_normalized_minus_single": {
+      "delta": 2.656066861665664,
+      "replicates": 10000,
+      "seed": 42,
+      "confidence_interval_95": [
+        2.1056415410829916,
+        3.2038286583107323
+      ]
+    }
+  }
+}

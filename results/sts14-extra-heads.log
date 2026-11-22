@@ -1,0 +1,116 @@
+W1122 13:50:26.221000 55261 torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 6323.66it/s]
+[transformers] [1mBertModel LOAD REPORT[0m from: models/bert-base-uncased
+Key                                        | Status     |  | 
+-------------------------------------------+------------+--+-
+cls.predictions.bias                       | UNEXPECTED |  | 
+cls.predictions.transform.dense.bias       | UNEXPECTED |  | 
+cls.predictions.transform.LayerNorm.bias   | UNEXPECTED |  | 
+cls.predictions.transform.dense.weight     | UNEXPECTED |  | 
+cls.seq_relationship.weight                | UNEXPECTED |  | 
+cls.predictions.transform.LayerNorm.weight | UNEXPECTED |  | 
+cls.seq_relationship.bias                  | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+Screening 33 extra heads on STS-B development
+Development scores: {3: 75.73536436542739, 4: 75.5766816936412, 5: 74.76970124349695}; frozen heads: [(0, 9), (1, 11), (10, 10), (0, 6), (10, 8)]
+Evaluating deft-forum: 450 pairs
+Evaluating deft-news: 300 pairs
+Evaluating headlines: 675 pairs
+Evaluating images: 632 pairs
+Evaluating OnWN: 750 pairs
+Evaluating tweet-news: 750 pairs
+{
+  "metric": "Pooled Spearman correlation × 100",
+  "heads_zero_based_by_k": {
+    "3": [
+      [
+        0,
+        9
+      ],
+      [
+        1,
+        11
+      ],
+      [
+        10,
+        10
+      ]
+    ],
+    "4": [
+      [
+        0,
+        9
+      ],
+      [
+        1,
+        11
+      ],
+      [
+        10,
+        10
+      ],
+      [
+        0,
+        6
+      ]
+    ],
+    "5": [
+      [
+        0,
+        9
+      ],
+      [
+        1,
+        11
+      ],
+      [
+        10,
+        10
+      ],
+      [
+        0,
+        6
+      ],
+      [
+        10,
+        8
+      ]
+    ]
+  },
+  "development_split": "STS-B development",
+  "development_scores": {
+    "3": 75.73536436542739,
+    "4": 75.5766816936412,
+    "5": 74.76970124349695
+  },
+  "test_split": "STS14 excluding exact STS-B development pairs (either order)",
+  "test_pairs": 3557,
+  "excluded_pairs": 193,
+  "test_scores": {
+    "3": 62.82856278485791,
+    "4": 62.26180065689435,
+    "5": 61.651496391355955
+  },
+  "comparisons_vs_three": {
+    "4": {
+      "delta": -0.5667621279635568,
+      "replicates": 10000,
+      "seed": 42,
+      "confidence_interval_95": [
+        -0.8355609880640835,
+        -0.301756441392137
+      ]
+    },
+    "5": {
+      "delta": -1.1770663935019527,
+      "replicates": 10000,
+      "seed": 42,
+      "confidence_interval_95": [
+        -1.6060777495754932,
+        -0.7399630678258394
+      ]
+    }
+  }
+}

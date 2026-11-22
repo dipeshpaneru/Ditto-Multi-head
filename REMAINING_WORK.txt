@@ -1,0 +1,29 @@
+DITTO PROJECT REMAINING WORK
+============================
+
+The report, reproduction code and results, and presentation are present.
+Use this checklist to finish the submission.
+
+[ ] Complete the independent-work section of the AI audit in
+    Ditto Project Report.docx. Record the verification, debugging, or
+    analysis you personally performed and attach concrete evidence such
+    as a run log, command output, or annotated code. If you still need
+    to do an independent check, use the commands in REPRODUCE.txt to
+    rerun the evaluation and record what you checked and observed.
+
+[ ] Verify the course prerequisites. Confirm that HW2 was completed and
+    submitted and that you watched the assigned video. Their completion
+    is unverified in the project records.
+    Video: https://www.youtube.com/watch?v=kCc8FmEb1nY
+
+[ ] Create one submission ZIP containing the final report, reproduction
+    code and results, and Ditto Presentation.pptx. Include REPRODUCE.txt
+    so the evaluator has the commands and dependency information.
+    The assignment permits providing the dataset as a link:
+    https://huggingface.co/datasets/princeton-nlp/datasets-for-simcse/resolve/main/senteval.tar
+
+[ ] Open the ZIP, verify the three deliverables are inside, and submit
+    the single ZIP through the course portal.
+
+The completed STS-B experiment meets the requirement to reproduce at
+least one key result. Running the other six benchmarks is optional.

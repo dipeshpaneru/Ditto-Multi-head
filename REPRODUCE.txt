@@ -1,0 +1,113 @@
+Ditto reproduction
+==================
+
+Chen et al. (2023), Ditto: A Simple and Efficient Approach to Improve
+Sentence Embeddings, EMNLP 2023, pp. 5868–5875.
+Paper: https://aclanthology.org/2023.emnlp-main.359/
+Code: https://github.com/alibaba-damo-academy/SpokenNLP/tree/30fc9df96ee4023868107c02ed681346dac4fa5d/ditto
+BERT revision: https://huggingface.co/google-bert/bert-base-uncased/tree/86b5e0934494bd15c9632b12f734a8a67f723594
+Data archive: https://huggingface.co/datasets/princeton-nlp/datasets-for-simcse/resolve/main/senteval.tar
+
+Run from the project folder
+---------------------------
+    bash reproduce.sh       # STS-B only
+    bash reproduce.sh all   # STS12–STS16, STS-B, and SICK-R
+
+The scripts use the project-local .venv and model checkpoint by default.
+They compare first–last average pooling with first–last diagonal attention
+pooling on the same BERT checkpoint. Layer 0, head 9 in the code correspond
+to layer 1, head 10 in the paper. No training or head search is needed for
+this reproduction. Each run saves one log per pooling method in results/.
+
+Score targets (Spearman correlation × 100, from paper Table 6)
+
+                         STS-B test   Seven-task average
+    First–last average        53.87                56.70
+    First–last Ditto          66.76                64.77
+
+Local Apple Silicon CPU verification on STS-B test:
+    First–last average        53.88  (results/stsb-avg_first_last.log)
+    First–last Ditto          66.76  (results/stsb-ditto.log)
+
+Ditto matched the paper at two decimal places. The average pooling
+baseline differed by 0.01 points. All seven datasets were verified to
+load. The seven-task scores above are the paper's reference values.
+
+For an STS-B-only run, read the STSBenchmark column. The upstream evaluator
+fills unrun tasks with zeros and includes them in its Avg. column.
+
+Environment and inputs
+----------------------
+The workspace includes a Python 3.12 environment for Apple Silicon and
+uses PyTorch CPU on Mac. To rebuild the environment on a compatible Mac
+with network access:
+
+    python3.12 -m venv .venv
+    .venv/bin/python -m pip install -r requirements-macos-arm64.txt
+
+SpokenNLP is a snapshot of the upstream repository at the commit linked
+above. Its ditto subdirectory contains the evaluation code. The evaluator
+uses the callable tokenizer API and requests eager attention on Transformers
+5 so it can retrieve the attention matrices. The SentEval STS loader filters
+variable-length token lists directly for compatibility with modern NumPy.
+The pooling formulas and scoring procedure are the authors' originals.
+
+The selected STS and SICK directories from senteval.tar are already under
+SpokenNLP/ditto/SentEval/data/downstream. To restore them from the archive:
+
+    tar -xf senteval.tar -C SpokenNLP/ditto/SentEval/data/downstream STS SICK
+
+SHA-256 of senteval.tar:
+    bc43c148f7be97471c78fc4255399d3158cb99dfe8f2221999c918338b138c38
+
+The model directory contains config.json, vocab.txt, and model.safetensors
+for the BERT revision linked above. The local vocabulary has the same Git
+blob hash as the upstream file, fb140275c155a9c7c5a3b3e0e77a9e839594a938.
+To restore weights after copying the project without them:
+
+    curl -fL 'https://huggingface.co/google-bert/bert-base-uncased/resolve/86b5e0934494bd15c9632b12f734a8a67f723594/model.safetensors' \
+        -o models/bert-base-uncased/model.safetensors
+
+SHA-256 of model.safetensors:
+    68d45e234eb4a928074dfd868cead0219ab85354cc53d20e772753c6bb9169d3
+
+Course project
+--------------
+See the project description for the report, improvement experiment,
+generative AI audit, and presentation requirements. The setup above
+targets the BERT headline comparison. The paper's other model variants
+and its Wikipedia-based TF-IDF and isotropy analyses use additional
+inputs listed in Appendix A.2.
+
+Multi-head Ditto experiment
+---------------------------
+Run from the project folder:
+
+    OMP_NUM_THREADS=4 .venv/bin/python SpokenNLP/ditto/evaluate_multihead.py \
+        --model models/bert-base-uncased --output results/stsb-multihead.json
+
+The script ranks the four Table 4 heads on development data, tests top-2,
+top-3 and top-4 ensembles on development data, and evaluates the selected
+ensemble and original single head on the held-out STS-B test split.
+The selected three-head ensemble scored 69.59 versus 66.76 for the
+single-head baseline, a gain of 2.83 points (Spearman correlation × 100).
+
+Weighted heads and normalization experiment
+--------------------------------------------
+Run from the project folder:
+
+    OMP_NUM_THREADS=4 .venv/bin/python SpokenNLP/ditto/evaluate_weighted_heads.py \
+        --model models/bert-base-uncased --output results/sickr-weighted-heads.json
+
+The script selects weights on STS-B development and evaluates the frozen
+weights on SICK-R test. It compares the equal-weight normalized ensemble
+with the corresponding raw ensemble and with single-head Ditto. Paired
+95% bootstrap intervals use 10,000 draws of sentence-pair rows.
+
+Four- and five-head follow-up
+-----------------------------
+    OMP_NUM_THREADS=4 .venv/bin/python SpokenNLP/ditto/evaluate_extra_heads.py \
+        --model models/bert-base-uncased --output results/sts14-extra-heads.json
+
+The experiment adds heads greedily on STS-B development and evaluates
+on STS14 after excluding exact development pairs in either order.

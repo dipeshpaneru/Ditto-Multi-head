@@ -1,0 +1,41 @@
+W1122 15:34:32.921000 19421 torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 5836.67it/s]
+[transformers] [1mBertModel LOAD REPORT[0m from: models/bert-base-uncased
+Key                                        | Status     |  | 
+-------------------------------------------+------------+--+-
+cls.seq_relationship.bias                  | UNEXPECTED |  | 
+cls.seq_relationship.weight                | UNEXPECTED |  | 
+cls.predictions.transform.LayerNorm.weight | UNEXPECTED |  | 
+cls.predictions.transform.dense.bias       | UNEXPECTED |  | 
+cls.predictions.transform.dense.weight     | UNEXPECTED |  | 
+cls.predictions.bias                       | UNEXPECTED |  | 
+cls.predictions.transform.LayerNorm.bias   | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+{
+  "heads_zero_based": [
+    [
+      0,
+      9
+    ],
+    [
+      1,
+      11
+    ],
+    [
+      10,
+      10
+    ]
+  ],
+  "test_pairs": 1379,
+  "two": 69.06794873113459,
+  "three": 69.58693093601288,
+  "two_minus_three": -0.5189822048782844,
+  "replicates": 10000,
+  "seed": 42,
+  "confidence_interval_95": [
+    -1.2835441814722681,
+    0.22943468085122817
+  ]
+}

@@ -1,0 +1,304 @@
+DITTO COURSE PROJECT LOG
+=======================
+Last updated 2026-11-22
+
+This file records the assignment, project decisions, and work completed.
+REPRODUCE.txt contains the runnable instructions and input checksums.
+The historical entries below group related commands and record their
+outcomes. Full evaluation output is in results/.
+
+ASSIGNMENT REQUIREMENTS
+-----------------------
+Source: Project_Description (1).pdf
+
+1. Complete and submit HW2 before starting the project. Watch the assigned
+   language-model implementation and training video:
+   https://www.youtube.com/watch?v=kCc8FmEb1nY
+2. Choose an ACL or EMNLP paper published from 2022 onward with public
+   source code. Read the paper and repository, identify the research
+   question, explain the method and contributions, and verify that you can
+   understand, run, and modify the code.
+3. Reproduce at least one key experimental result with generative AI
+   assistance. Set up dependencies, obtain and preprocess the data, run the
+   released implementation, and compare your result with the paper.
+   Explain discrepancies and verify the code and results yourself.
+4. Propose one specific improvement. Explain the motivation, implement it
+   where feasible, and evaluate it against the reproduced baseline.
+5. Audit generative AI use. Document accepted suggestions and how you
+   verified them, rejected suggestions and why they failed, and the work
+   you did independently. Give detailed rejection examples and use evidence
+   such as code, results, and debugging records.
+
+FINAL DELIVERABLES
+------------------
+1. Project report with paper citation, research question, method, source
+   repository link, improvement motivation and evaluation, and an
+   evidence-backed generative AI audit covering the items above.
+2. Reproduction code and results with implementation details, experimental
+   settings, reproduced scores, and comparison with the published scores.
+3. Presentation covering the research question, main idea, brief
+   AI-assisted results, rejected AI suggestions, and proposed improvement.
+
+Submit one ZIP. The dataset may be provided as a link. Teams may have up
+to two members.
+
+SELECTED PAPER AND EXPERIMENT
+-----------------------------
+Chen et al. (2023), Ditto: A Simple and Efficient Approach to Improve
+Sentence Embeddings, EMNLP 2023, pp. 5868–5875.
+Paper: https://aclanthology.org/2023.emnlp-main.359/
+Source: https://github.com/alibaba-damo-academy/SpokenNLP/tree/30fc9df96ee4023868107c02ed681346dac4fa5d/ditto
+
+Research question: Can pretrained self-attention weights improve sentence
+embeddings for semantic textual similarity?
+Method: Ditto uses a selected head's diagonal self-attention values to
+weight token representations. The comparison uses pretrained uncased BERT
+and first–last pooling, with no model training. The paper's BERT layer 1,
+head 10 maps to --layer 0 --head 9 in the evaluator.
+
+CHRONOLOGICAL WORK LOG
+----------------------
+01 | Found and read the assignment
+     Commands: rg --files; pdftotext -layout; Python PDF import; Swift
+     PDFKit extraction attempts; swiftc -framework PDFKit and executable.
+     Outcome: pdftotext and pypdf were unavailable. Swift's interpreter
+     encountered cache permissions and a PDFKit linking error. Compiling
+     the PDFKit reader in a temporary directory successfully extracted the
+     assignment. Its requirements and deliverables are listed above.
+
+02 | Verified the paper and source
+     Actions: Opened the ACL Anthology entry and PDF, checked the official
+     GitHub repository, and read Appendix A.2 and Table 6.
+     Outcome: Confirmed the venue, released code, STS datasets and metric.
+     Chose the BERT comparison, starting with the STS-B test split.
+
+03 | Retrieved the source and inputs
+     Commands/actions: git clone --depth 1; curl host checks; Chrome
+     downloads; unzip -t; unzip and copy; tar -tf; tar -xf for STS and
+     SICK; copy model weights; git hash-object for the BERT vocabulary;
+     shasum -a 256 for the weights and data archive.
+     Outcome: Terminal DNS failed for download hosts. Chrome retrieved
+     the official repository ZIP, SentEval archive and BERT safetensors.
+     Extracted the Ditto subtree first, then copied in the rest of the
+     repository snapshot without overwriting Ditto changes. Installed all
+     seven benchmark inputs. Recreated config.json from the published
+     configuration, and verified the local vocabulary matched the upstream
+     Git blob hash. Input URLs and checksums are in REPRODUCE.txt.
+
+04 | Built the Apple Silicon environment
+     Commands/actions: Inspected Python and the local package cache;
+     attempted uv venv; ran Python 3.12.12 -m venv .venv; installed local
+     wheels with pip --no-index --no-deps; copied compatible packages from
+     the cache; imported dependencies; ran pip check and pip freeze.
+     Outcome: uv hit a cache permission error and then a macOS system
+     configuration error. Python's venv worked. Downloaded SciPy,
+     scikit-learn and PrettyTable wheels in Chrome. The first PyTorch
+     import detected a missing torch_shm_manager, fixed by copying the
+     package's bin directory from its cached wheel. pip check reported no
+     broken requirements. Saved versions in requirements-macos-arm64.txt.
+
+05 | Adapted the authors' evaluation to the installed libraries
+     Commands/actions: Ran evaluation_ditto.py with the local BERT and
+     STSBenchmark. Inspected the traceback and updated the evaluator and
+     SentEval loader.
+     Outcome: Transformers 5 removed batch_encode_plus. Switched to
+     the callable tokenizer API and enabled eager attention for Transformers
+     5 so the evaluator could read attention matrices. Updated the STS
+     loader to filter variable-length token lists directly for modern NumPy.
+     The original pooling formulas and scoring procedure are used.
+
+06 | Created and checked the runner
+     Commands: bash -n reproduce.sh; bash reproduce.sh invalid;
+     Python check instantiating all seven SentEval dataset loaders.
+     Outcome: Syntax passed, invalid input printed usage, and all seven
+     datasets loaded. STS-B has 5,749 train, 1,500 dev, and 1,379 test
+     sentence pairs. Created REPRODUCE.txt with commands and provenance.
+
+07 | Reproduced and verified the STS-B comparison
+     Commands: Direct evaluation_ditto.py run with --pooler att_first_last
+     --layer 0 --head 9 --task_set na --tasks STSBenchmark --mode test;
+     bash reproduce.sh; tail on the resulting logs.
+     Outcome: Both methods completed locally on Apple Silicon CPU.
+     A second Ditto run through the wrapper returned the same test score.
+
+     STS-B test, Spearman correlation × 100
+     Method                       Paper     Local     Local minus paper
+     First–last average           53.87     53.88                 +0.01
+     First–last Ditto             66.76     66.76                  0.00
+
+     Ditto also matched the paper's development score of 74.56.
+     Local test gain over average pooling was 12.88 points.
+     The 0.01-point baseline discrepancy has no verified cause.
+     Read STSBenchmark for a one-task run. The evaluator averages zeros
+     for skipped tasks into the displayed Avg. column.
+     Evidence: results/stsb-avg_first_last.log,
+     results/stsb-att_first_last.log, results/stsb-ditto.log.
+
+08 | Shared the commands and recorded project context
+     Actions: Provided the wrapper and direct evaluator commands in chat;
+     inspected the workspace and completed logs; created PROJECT_LOG.txt.
+     Outcome: The commands live in reproduce.sh and REPRODUCE.txt. The
+     assignment, results and work history are captured here.
+
+STATUS AND OPEN WORK
+--------------------
+Complete: paper selection, official source snapshot, BERT/data setup,
+environment, compatibility changes, and the STS-B reproduction.
+Available: bash reproduce.sh all runs the seven-benchmark comparison.
+The seven-task evaluation has not been run end to end. Paper reference
+averages are 56.70 for average pooling and 64.77 for Ditto.
+Proposed improvement: test pooling with several attention heads selected
+using only the STS-B development split, then compare against single-head
+Ditto on the held-out test split. Implemented and evaluated in entries 09–11.
+Draft report and presentation completed in entry 12. Pending: evidence
+of independent student work and the final submission ZIP.
+HW2 submission, video viewing and independent student work are unverified.
+The log records AI-assisted work. Student contributions and decisions
+should be recorded when they occur and supported with their own evidence.
+
+FUTURE WORK LOG FORMAT
+----------------------
+Append an entry after each project command or action, including failures.
+For an evaluation, record the split, model revision, settings, metric,
+result, and path to the raw log.
+
+Date/time | Command or action | Outcome | Files changed or evidence
+
+09 | Started the multi-head experiment
+     Command: Inspected evaluation_ditto.py and project environment.
+     Outcome: Confirmed the original first–last pooling and STS-B loader
+     can be reused. The experiment will share a single BERT forward pass
+     across candidate heads and select k on development data only.
+
+10 | Implemented and launched multi-head evaluation
+     Command: PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=4 HF_HUB_OFFLINE=1 .venv/bin/python SpokenNLP/ditto/evaluate_multihead.py --model models/bert-base-uncased --output results/stsb-multihead.json > results/stsb-multihead.log 2>&1
+     Outcome: Added a separate entry point using the original SentEval
+     loader and cosine scorer. It masks and normalizes each head, then
+     averages the selected normalized embeddings. It ranks four heads,
+     compares top-2, top-3 and top-4 on dev, and evaluates the winner and
+     the original head on test. Ties favor the earlier listed head and
+     smaller ensemble. Output files are under results/.
+
+11 | Verified multi-head results
+     Commands: Read the evaluation log and JSON, verified a clean process
+     exit and checked the selected heads and rounded test scores with
+     Python assertions.
+     Outcome: Development scores were 74.56, 73.13, 70.59 and 69.54 for
+     individual heads in Table 4 order. The top-2, top-3 and top-4
+     ensembles scored 75.47, 75.74 and 75.58. Selected three heads
+     (0, 9), (1, 11), (10, 10) using only the development split.
+     On 1,379 held-out STS-B pairs, the single head scored 66.76 and
+     the three-head ensemble scored 69.59, a gain of 2.83 Spearman
+     points (correlation × 100). The baseline matched the earlier
+     reproduction at two decimal places. This evaluation covers STS-B.
+     Evidence: results/stsb-multihead.json and results/stsb-multihead.log.
+
+12 | Created and verified the report and presentation
+     Actions: Read the saved evaluation and project records, authored
+     a Word report and PowerPoint deck, rendered both, corrected a cover
+     title overlap, and checked page count, slide count and note timings.
+     Outcome: Ditto Project Report.docx is seven pages. Ditto
+     Presentation.pptx contains nine slides and speaker notes with
+     suggested timings totaling 10 minutes. Both cover the original
+     method, reproduced scores, multi-head experiment and AI audit.
+     The audit records documented student direction and leaves
+     independent work for the student to substantiate.
+
+13 | Recorded remaining submission work
+     Command: Created REMAINING_WORK.txt and verified its checklist.
+     Outcome: Listed the independent-work audit, prerequisite checks,
+     ZIP packaging, and submission steps.
+
+14 | Started a statistical check of the multi-head gain
+     Command: PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=4 .venv/bin/python SpokenNLP/ditto/evaluate_multihead.py --model models/bert-base-uncased --output results/stsb-multihead-bootstrap.json --bootstrap > results/stsb-multihead-bootstrap.log 2>&1
+     Outcome: Added an optional paired bootstrap with 10,000 resamples
+     and seed 42. Each draw resamples the same test-pair indices for the
+     single-head and multi-head methods and recomputes the Spearman
+     difference. The selected heads still come from development data.
+
+15 | Verified the paired bootstrap interval
+     Command: Read the bootstrap JSON and compared the scores and head
+     selection with the original result using a Python assertion.
+     Outcome: The original results matched exactly. The observed gain
+     was 2.83 points with a paired 95% bootstrap interval
+     of [1.45, 4.29] on the 1,379 STS-B test pairs. The interval
+     treats sentence pairs as independent units and is conditional on
+     the already selected heads. This was a follow-up analysis.
+     Evidence: results/stsb-multihead-bootstrap.json and results/stsb-multihead-bootstrap.log.
+
+16 | Started weighted pooling and normalization ablation
+     Command: PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=4 .venv/bin/python SpokenNLP/ditto/evaluate_weighted_heads.py --model models/bert-base-uncased --output results/sickr-weighted-heads.json > results/sickr-weighted-heads.log 2>&1
+     Outcome: Fixed the previously selected three heads. The script
+     compares equal weights and the three permutations of (0.50, 0.25,
+     0.25) on STS-B development and freezes the winner. It evaluates
+     normalized and raw equal-weight pooling, the frozen winner and
+     single-head Ditto on SICK-R test. It uses 10,000 paired bootstrap
+     resamples for each comparison.
+
+17 | Verified the SICK-R follow-up results
+     Commands: Read the completed JSON and used Python assertions to
+     check the selected weights, test size, score differences and intervals.
+     Outcome: STS-B dev selected 50/25/25 with 75.91 versus 75.74 for
+     equal weights. On 4,927 SICK-R test pairs, single-head Ditto scored
+     61.64, equal normalized 64.29, tuned normalized 63.94, and equal
+     raw 64.55 (Spearman correlation × 100).
+     Paired 95% bootstrap intervals on SICK-R:
+       Tuned normalized minus equal normalized: -0.36 [-0.52, -0.19].
+       Equal raw minus equal normalized: +0.26 [+0.08, +0.45].
+       Equal normalized minus single head: +2.66 [+2.11, +3.20].
+     The weighted variant reduced SICK-R performance. Equal-weight
+     multi-head pooling carried over, and raw pooling had a small edge
+     on this benchmark. The ablation is a follow-up and the intervals
+     treat test pairs as independent rows.
+     Evidence: results/sickr-weighted-heads.json and .log, plus the
+     reproduction command in REPRODUCE.txt.
+
+18 | Refined the report formatting
+     Commands: Styled the existing DOCX, rendered the candidate, and
+     compared the final file with the verified candidate.
+     Outcome: Refined typography, spacing, table styles, and the footer.
+     Verified seven pages and identical paragraph, table, and footer
+     wording. The SICK-R follow-up was excluded as requested.
+
+19 | Started the four- and five-head experiment
+     Command: PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=4 .venv/bin/python SpokenNLP/ditto/evaluate_extra_heads.py --model models/bert-base-uncased --output results/sts14-extra-heads.json > results/sts14-extra-heads.log 2>&1
+     Outcome: Preserved the three original heads and added candidates
+     greedily from the other 33 heads in their three layers. Candidates
+     use equal normalized pooling and are selected on STS-B development.
+     The test uses STS14 with exact development pairs removed in either
+     sentence order. Batched matrix multiplication computes the same
+     weighted sum without expanding a tensor over heads and token vectors.
+
+20 | Verified the extra-head results
+     Commands: Read results/sts14-extra-heads.json and checked head
+     membership, pair counts, score differences and intervals in Python.
+     Outcome: Selected (0,6) as the fourth head and (10,8) as the fifth
+     using zero-based layer/head indexing. Development scores for 3, 4
+     and 5 heads were 75.74, 75.58 and 74.77. Removed 193 exact STS-B
+     development overlaps from STS14. On the remaining 3,557 pairs, the
+     pooled Spearman scores were 62.83, 62.26 and 61.65. Relative to
+     three heads, four lost 0.57 points (paired 95% interval -0.84 to
+     -0.30) and five lost 1.18 points (-1.61 to -0.74). Each interval
+     uses 10,000 paired row resamples. Kept this follow-up in code and logs.
+
+21 | Added both follow-up experiments to the report and slides
+     Actions: Updated the Self Implementations section, added the
+     follow-up slide, and rendered and verified both deliverables.
+     Outcome: The eight-page report and ten-slide deck explain the
+     four- and five-head comparison on STS14 and the unequal-weight
+     comparison on SICK-R. The speaker-note timings total ten minutes.
+
+22 | Explained why more heads might reduce performance
+     Actions: Updated the report interpretation and the follow-up slide
+     and notes. Rendered both artifacts and verified the revised layout.
+     Outcome: Documented dilution under equal averaging, redundant
+     or less useful patterns, and possible cross-dataset transfer
+     differences as hypotheses. The report remains eight pages.
+
+23 | Compared the top two and top three heads on STS-B test
+     Command: Ran a Python follow-up with evaluate_multihead.py helpers.
+     Outcome: Two heads scored 69.07 and three scored 69.59
+     on 1,379 test pairs. The two-minus-three difference was
+     -0.52 with a paired 95% interval of [-1.28, +0.23].
+     This is a follow-up on the previously evaluated test split.
+     Evidence: results/stsb-two-vs-three.json and results/stsb-two-vs-three.log.
