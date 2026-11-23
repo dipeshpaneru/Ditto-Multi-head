@@ -332,3 +332,9 @@ Date/time | Command or action | Outcome | Files changed or evidence
      interval +0.76 to +1.52).
      Evidence: results/stsb-special-token-ablation.json and
      results/sts13-special-token-ablation.json and their logs.
+
+27 | Added special-token pooling to the report and slides
+     Actions: Updated Self Implementations on report page 5 and
+     slide 8 with the STS-B and filtered STS13 comparisons.
+     Outcome: Rendered and checked the updated page and slide.
+     The report remains eight pages and the deck remains ten slides.
