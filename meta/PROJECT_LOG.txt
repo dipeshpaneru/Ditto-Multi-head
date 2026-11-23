@@ -302,3 +302,12 @@ Date/time | Command or action | Outcome | Files changed or evidence
      -0.52 with a paired 95% interval of [-1.28, +0.23].
      This is a follow-up on the previously evaluated test split.
      Evidence: results/stsb-two-vs-three.json and results/stsb-two-vs-three.log.
+
+24 | Evaluated all two-head combinations
+     Command: Ran an inline Python evaluation using evaluate_multihead.py.
+     Outcome: Scored all six pairs on STS-B development. The best pair,
+     (0, 9) and (1, 11), was the same pair selected by individual ranking.
+     It scored 75.47 on development and 69.07 on the previously evaluated
+     test split, versus 69.59 for three heads. The paired 95% interval
+     for two minus three was [-1.28, +0.23].
+     Evidence: results/stsb-all-head-pairs.json and .log.

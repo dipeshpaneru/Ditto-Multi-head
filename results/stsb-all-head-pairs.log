@@ -1,0 +1,124 @@
+W1122 19:27:20.273000 66149 torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 6597.48it/s]
+[transformers] [1mBertModel LOAD REPORT[0m from: models/bert-base-uncased
+Key                                        | Status     |  | 
+-------------------------------------------+------------+--+-
+cls.predictions.transform.dense.bias       | UNEXPECTED |  | 
+cls.predictions.bias                       | UNEXPECTED |  | 
+cls.seq_relationship.weight                | UNEXPECTED |  | 
+cls.seq_relationship.bias                  | UNEXPECTED |  | 
+cls.predictions.transform.LayerNorm.bias   | UNEXPECTED |  | 
+cls.predictions.transform.LayerNorm.weight | UNEXPECTED |  | 
+cls.predictions.transform.dense.weight     | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+Encoding development pairs
+Development ranking: [(75.47006613963762, (0, 1)), (75.33564291519812, (0, 2)), (74.71701508614123, (0, 3)), (74.06734808975641, (1, 2)), (73.50845784640903, (2, 3)), (73.15282325934479, (1, 3))]
+Encoding test pairs for the selected pair and three-head comparison
+{
+  "metric": "Spearman correlation × 100",
+  "head_indexing": "zero-based layer, head",
+  "development_pairs": [
+    {
+      "heads": [
+        [
+          0,
+          9
+        ],
+        [
+          1,
+          11
+        ]
+      ],
+      "score": 75.47006613963762
+    },
+    {
+      "heads": [
+        [
+          0,
+          9
+        ],
+        [
+          10,
+          10
+        ]
+      ],
+      "score": 75.33564291519812
+    },
+    {
+      "heads": [
+        [
+          0,
+          9
+        ],
+        [
+          0,
+          6
+        ]
+      ],
+      "score": 74.71701508614123
+    },
+    {
+      "heads": [
+        [
+          1,
+          11
+        ],
+        [
+          10,
+          10
+        ]
+      ],
+      "score": 74.06734808975641
+    },
+    {
+      "heads": [
+        [
+          10,
+          10
+        ],
+        [
+          0,
+          6
+        ]
+      ],
+      "score": 73.50845784640903
+    },
+    {
+      "heads": [
+        [
+          1,
+          11
+        ],
+        [
+          0,
+          6
+        ]
+      ],
+      "score": 73.15282325934479
+    }
+  ],
+  "test_pairs": 1379,
+  "selected_two_heads": [
+    [
+      0,
+      9
+    ],
+    [
+      1,
+      11
+    ]
+  ],
+  "test_two": 69.06794873113459,
+  "test_three": 69.58693093601288,
+  "test_two_minus_three": -0.5189822048782844,
+  "paired_bootstrap": {
+    "replicates": 10000,
+    "seed": 42,
+    "confidence_interval_95": [
+      -1.2835441814722681,
+      0.22943468085122817
+    ]
+  }
+}
