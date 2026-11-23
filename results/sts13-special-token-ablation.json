@@ -1,0 +1,30 @@
+{
+  "metric": "Pooled Spearman correlation × 100",
+  "heads_zero_based": [
+    [
+      0,
+      9
+    ],
+    [
+      1,
+      11
+    ],
+    [
+      10,
+      10
+    ]
+  ],
+  "pairs": 1347,
+  "excluded_stsb_dev_or_test_pairs": 153,
+  "with_cls_sep": 70.96342290104324,
+  "without_cls_sep": 72.10316571251822,
+  "delta": 1.1397428114749744,
+  "paired_bootstrap": {
+    "replicates": 10000,
+    "seed": 42,
+    "confidence_interval_95": [
+      0.7639160900651643,
+      1.5188995679617414
+    ]
+  }
+}

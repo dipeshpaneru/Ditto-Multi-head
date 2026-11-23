@@ -111,3 +111,13 @@ Four- and five-head follow-up
 
 The experiment adds heads greedily on STS-B development and evaluates
 on STS14 after excluding exact development pairs in either order.
+
+Special-token pooling ablation
+------------------------------
+    OMP_NUM_THREADS=4 .venv/bin/python SpokenNLP/ditto/evaluate_multihead.py \
+        --model models/bert-base-uncased --output results/stsb-special-token-ablation.json \
+        --exclude-special-tokens --bootstrap
+
+The extra option compares the same development-selected heads on STS-B
+with CLS and SEP included and excluded from pooling. The tokens remain
+in BERT's input. Empty sentences use the original pooling mask.

@@ -1,0 +1,47 @@
+W1122 19:45:12.944000 77769 torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 7526.71it/s]
+[transformers] [1mBertModel LOAD REPORT[0m from: models/bert-base-uncased
+Key                                        | Status     |  | 
+-------------------------------------------+------------+--+-
+cls.seq_relationship.bias                  | UNEXPECTED |  | 
+cls.predictions.transform.dense.bias       | UNEXPECTED |  | 
+cls.predictions.transform.LayerNorm.bias   | UNEXPECTED |  | 
+cls.predictions.transform.dense.weight     | UNEXPECTED |  | 
+cls.predictions.transform.LayerNorm.weight | UNEXPECTED |  | 
+cls.seq_relationship.weight                | UNEXPECTED |  | 
+cls.predictions.bias                       | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+Encoding 1347 STS13 pairs with exclude_special_tokens=False
+Encoding 1347 STS13 pairs with exclude_special_tokens=True
+{
+  "metric": "Pooled Spearman correlation × 100",
+  "heads_zero_based": [
+    [
+      0,
+      9
+    ],
+    [
+      1,
+      11
+    ],
+    [
+      10,
+      10
+    ]
+  ],
+  "pairs": 1347,
+  "excluded_stsb_dev_or_test_pairs": 153,
+  "with_cls_sep": 70.96342290104324,
+  "without_cls_sep": 72.10316571251822,
+  "delta": 1.1397428114749744,
+  "paired_bootstrap": {
+    "replicates": 10000,
+    "seed": 42,
+    "confidence_interval_95": [
+      0.7639160900651643,
+      1.5188995679617414
+    ]
+  }
+}

@@ -311,3 +311,24 @@ Date/time | Command or action | Outcome | Files changed or evidence
      test split, versus 69.59 for three heads. The paired 95% interval
      for two minus three was [-1.28, +0.23].
      Evidence: results/stsb-all-head-pairs.json and .log.
+
+25 | Added an option to exclude BERT special tokens from pooling
+     Command: PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=4 .venv/bin/python SpokenNLP/ditto/evaluate_multihead.py --model models/bert-base-uncased --output results/stsb-special-token-ablation.json --exclude-special-tokens --bootstrap
+     Actions: Added a CLS/SEP mask before per-head normalization.
+     The tokenizer still passes both tokens to BERT. Compared the
+     same three heads with and without the pooling mask.
+     Verification: A controlled example confirmed that only the word
+     contributes with the flag on, and an empty sentence safely falls
+     back to the original pooling mask.
+
+26 | Verified the special-token pooling experiment
+     Actions: Fixed a variable-order error in the optional bootstrap
+     path and reran the full command. Ran a separate STS13 evaluation
+     with the same three heads and excluded 153 exact STS-B overlaps.
+     Outcome: STS-B development improved by
+     +1.50 points. On the previously examined STS-B test split,
+     69.59 became 70.52 (+0.93). Filtered STS13 scored 70.96
+     with special tokens and 72.10 without them (+1.14; paired 95%
+     interval +0.76 to +1.52).
+     Evidence: results/stsb-special-token-ablation.json and
+     results/sts13-special-token-ablation.json and their logs.

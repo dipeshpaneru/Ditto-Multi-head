@@ -1,0 +1,78 @@
+{
+  "metric": "Spearman correlation × 100",
+  "head_indexing": "zero-based layer, head",
+  "development_single_heads": [
+    {
+      "head": [
+        0,
+        9
+      ],
+      "score": 74.5553445119372
+    },
+    {
+      "head": [
+        1,
+        11
+      ],
+      "score": 73.12620437976487
+    },
+    {
+      "head": [
+        10,
+        10
+      ],
+      "score": 70.59217042459528
+    },
+    {
+      "head": [
+        0,
+        6
+      ],
+      "score": 69.53870030256651
+    }
+  ],
+  "development_ensembles_by_k": {
+    "2": 75.47006613963762,
+    "3": 75.73536436542739,
+    "4": 75.5766816936412
+  },
+  "selected_heads": [
+    [
+      0,
+      9
+    ],
+    [
+      1,
+      11
+    ],
+    [
+      10,
+      10
+    ]
+  ],
+  "test_single_head": 66.75975212990323,
+  "test_multihead": 69.58693093601288,
+  "test_delta": 2.827178806109643,
+  "special_token_ablation": {
+    "development_without_cls_sep": 77.23476273113907,
+    "development_delta_vs_same_heads": 1.4993983657116843,
+    "test_without_cls_sep": 70.52146656462583,
+    "delta_vs_same_heads": 0.9345356286129487,
+    "paired_bootstrap": {
+      "replicates": 10000,
+      "seed": 42,
+      "confidence_interval_95": [
+        0.5751746478812653,
+        1.3035589284947007
+      ]
+    }
+  },
+  "paired_bootstrap": {
+    "replicates": 10000,
+    "seed": 42,
+    "confidence_interval_95": [
+      1.4502392052632005,
+      4.291967869160465
+    ]
+  }
+}
